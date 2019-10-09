@@ -37,8 +37,7 @@ public class Model {
 				container.add(r);
 				// setting the text
 				r.setTextLocation(Xposition, Yposition + 20,r.getInfoText());
-				r.setTextLocation(Xposition, Yposition + 10,r.getEmployee());
-				r.setTextLocation(Xposition, Yposition + 65, r.getFullText());
+				r.setTextLocation(Xposition, Yposition + 40, r.getFullText());
 
 			}
 
