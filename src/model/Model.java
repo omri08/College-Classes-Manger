@@ -36,8 +36,8 @@ public class Model {
 				OfficeRoom r = new OfficeRoom(Xposition, Yposition);
 				container.add(r);
 				// setting the text
-				r.setTextLocation(Xposition, Yposition + 20,r.getInfoText());
-				r.setTextLocation(Xposition, Yposition + 40, r.getFullText());
+				r.setTextLocation(Xposition, Yposition + 15,r.getInfoText());
+				r.setTextLocation(Xposition, Yposition + 63, r.getFullText());
 
 			}
 
@@ -95,12 +95,15 @@ public class Model {
 	public Room searchRoom(String type, int num) {
 		if (type == "ClassRoom") {
 			return container.searchClassRoom(num);
-		} else if (type == "OfficeRoom") {
-			return null;
+			
 		} else if (type == "ComputerLab") {
 		return container.searchComputer(num);
 		}
 		return null;
+	}
+	
+	public OfficeRoom searOfficeRoom(String name) {
+		return container.searchOfficeRoom(name);
 	}
 	
 	

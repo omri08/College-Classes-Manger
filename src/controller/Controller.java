@@ -6,6 +6,7 @@ import javafx.scene.paint.Color;
 import model.ClassRoom;
 import model.Cleanable;
 import javafx.scene.shape.*;
+import javafx.scene.text.*;
 
 public class Controller {
 	private model.Model model;
@@ -31,8 +32,7 @@ public class Controller {
 
 					// update the view to draw the rectangle
 					view.draw(model.getContainer().getLastCleanable());
-					
-					
+
 					// create action when click on the rectangle
 					view.addClickingActionToClassRoom(model.getContainer().getLastRec(),
 							new EventHandler<MouseEvent>() {
@@ -41,36 +41,34 @@ public class Controller {
 								public void handle(MouseEvent event) {
 									// 1. get the rectangle that was clicked on
 									Rectangle rct = (Rectangle) event.getTarget();
-							
-									
-									
+
 									// 2. find the object that was clicked on
-									
+
 									model.ClassRoom c = (model.ClassRoom) model.getContainer().findSourceClean(rct);
-									
+
 									// 3. a. check if this room is occupied
-									          // * if  occupied release it and mark as dirty
-									if(c.isInUse()) {
-										c.useIt();;
+									// * if occupied release it and mark as dirty
+									if (c.isInUse()) {
+										c.useIt();
+										;
 										view.relaseTheRoomCleanable(c, c.getDirty());
-										c.clean(); // update the  model room is dirty
-									} else if (c.isInUse() == false && c.isClean() == false) {   // else clean the the room and mark as clean
+										c.clean(); // update the model room is dirty
+									} else if (c.isInUse() == false && c.isClean() == false) { // else clean the the
+																								// room and mark as
+																								// clean
 										c.clean(); // update the model room is clean
 										view.cleanTheRoom(c, c.getDirty());
-										
+
 									}
-									        
+
 								}
 
 							});
-					
-					
-					
+
 				} else
 					view.alertOutOfSpce();
-				
-				
-		}
+
+			}
 
 		});
 
@@ -82,15 +80,13 @@ public class Controller {
 				if (model.creation("OfficeRoom")) {
 					// creation succeed
 
-					// getting input from the user
 					model.OfficeRoom temp = (model.OfficeRoom) model.getContainer().getLastRoom();
-					String result = view.showInputDialogString(temp.getDialog());
+					String result = view.showInputDialogString(temp.getDialog()); // getting input from the user
 					temp.setNames(result); // update the model with the result
 
 					// update the view to draw the rectangle
 					view.draw(model.getContainer().getLastRoom());
-					
-					
+
 					view.addClickingActionToClassOffice(model.getContainer().getLastRec(),
 							new EventHandler<MouseEvent>() {
 
@@ -98,27 +94,21 @@ public class Controller {
 								public void handle(MouseEvent event) {
 									// 1. get the rectangle that was clicked on
 									Rectangle rct = (Rectangle) event.getTarget();
-							
-									
-									
+
 									// 2. find the object that was clicked on
-									
 									model.OfficeRoom off = (model.OfficeRoom) model.getContainer().findSourceRoom(rct);
-									
-									// 3. a. check if this room is occupied
-									          // * if  occupied release it
-									if(off.isInUse()) {
-										off.useIt();;
+
+									// 3. a. check if this office room is full
+									// * if full release it
+									if (off.getNumPeople() == 2) {
 										off.setNames("default");
-										
+										view.relaseOffice(off);
 									}
-									        
+
 								}
 
 							});
-					
-					
-					
+
 				} else
 					view.alertOutOfSpce();
 			}
@@ -148,25 +138,26 @@ public class Controller {
 								public void handle(MouseEvent event) {
 									// 1. get the rectangle that was clicked on
 									Rectangle rct = (Rectangle) event.getTarget();
-							
-									
-									
+
 									// 2. find the object that was clicked on
-									
-									model.ComputerLab com = (model.ComputerLab) model.getContainer().findSourceClean(rct);
-									
+
+									model.ComputerLab com = (model.ComputerLab) model.getContainer()
+											.findSourceClean(rct);
+
 									// 3. a. check if this room is occupied
-									          // * if  occupied release it and mark as dirty
-									if(com.isInUse()) {
+									// * if occupied release it and mark as dirty
+									if (com.isInUse()) {
 										com.useIt();
 										view.relaseTheRoomCleanable(com, com.getDirty());
 										com.clean();
-									} else if (com.isInUse() == false && com.isClean() == false) {   // else clean the the room and mark as clean
+									} else if (com.isInUse() == false && com.isClean() == false) { // else clean the the
+																									// room and mark as
+																									// clean
 										com.clean(); // update the model room is clean
 										view.cleanTheRoom(com, com.getDirty());
-										
+
 									}
-									        
+
 								}
 
 							});
@@ -197,13 +188,24 @@ public class Controller {
 			public void handle(ActionEvent event) {
 				// show dialog for user input
 				String choice = view.showBookDialog();
-				int input = view.searching(choice, model); // store the user input
 
-				// search for the user book
-				model.Room r = model.searchRoom(choice, input);
-				if (r != null) { // if we found a suitable room update the view and the model
-					view.bookTheRoom(r);
-					r.setInUse(true);
+				if (choice == "OfficeRoom") {
+					String input = view.searchingOffice(choice, model); // store the user input
+					model.OfficeRoom off = model.searOfficeRoom(input);
+					if(off != null) {
+						off.setNames(input,off);
+						view.bookOffice(off);
+					}
+					
+					
+				} else {
+					int input = view.searching(choice, model); // store the user input
+					// search for the user book
+					model.Room r = model.searchRoom(choice, input);
+					if (r != null) { // if we found a suitable room update the view and the model
+						view.bookTheRoom(r);
+						r.setInUse(true);
+					}
 				}
 
 			}

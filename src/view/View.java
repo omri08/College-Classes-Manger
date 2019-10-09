@@ -139,7 +139,19 @@ public class View {
 	}
 
 	public void draw(model.Room r) {
-		root.getChildren().addAll(r.getRct(),r.getInfoText());
+		if(root.getChildren().contains(btnBook) == false)
+			root.getChildren().add(btnBook);
+		
+		if(r instanceof model.OfficeRoom) {
+			model.OfficeRoom office = (model.OfficeRoom)r;
+			if(office.getNumPeople() == 2)
+				root.getChildren().addAll(office.getRct(),office.getInfoText(),office.getFullText());
+			else
+				root.getChildren().addAll(r.getRct(),r.getInfoText());
+		}else {
+			root.getChildren().addAll(r.getRct(),r.getInfoText());
+		}
+		
 	}
 
 	public void alertOutOfSpce() {
@@ -171,13 +183,25 @@ public class View {
 		return Integer.parseInt(result.get());
 	}
 	
+	public String searchingOffice (String str,model.Model m) {
+		Optional<String> result = m.getBookingInfo(str).showAndWait();
+		return result.get();
+	}
+	
+	
 	public void bookTheRoom(model.Room r) {
 		root.getChildren().removeAll(r.getInfoText(),r.getRct());
 		r.getRct().setFill(bookedColor);
 		root.getChildren().addAll(r.getRct(),r.getOccupiedText());
 		
+	}
 	
-
+	public void bookOffice(model.OfficeRoom off) {
+		root.getChildren().remove(off.getInfoText());
+		root.getChildren().add(off.getInfoText());
+		if(off.getNumPeople() == 2) {
+			root.getChildren().add(off.getFullText());
+		}
 	}
 	
 	public void cleanTheRoom(model.Room r, Text dirtyText) {
@@ -192,6 +216,11 @@ public class View {
 	          root.getChildren().addAll(r.getRct(),dirtyText); // adding the dirty text 
 		}
 	
+	public void relaseOffice(model.OfficeRoom off) {
+		root.getChildren().removeAll(off.getFullText(),off.getInfoText()); // delete the old names and full text
+		root.getChildren().add(off.getInfoText());
+		
+	}
 
 	
 }
